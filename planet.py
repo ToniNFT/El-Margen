@@ -56,13 +56,12 @@ OEMBED_PROVIDERS: list[tuple[str, str, str]] = [
     ("spotify.com", "https://open.spotify.com/oembed?url={url}", "audio"),
 ]
 
-# iVoox: reproductor propio vía URL de widget con el ID numérico del episodio,
-# tal y como lo genera el propio botón "Insertar" de iVoox. El ID aparece en la
-# URL del episodio, típicamente como .../algo_rf_ID_1.html o ivoox.com/ID
+# iVoox: enlazamos directamente al mp3 y usamos el <audio> nativo del
+# navegador en vez del iframe con su propio aviso de cookies — el ID es el
+# mismo número que aparece en la URL del episodio (.../algo_rf_ID_1.html).
 IVOOX_DOMAIN = "ivoox.com"
 IVOOX_ID_RE = re.compile(r"_rf_(\d+)_|ivoox\.com/(\d+)(?:[/?]|$)")
-IVOOX_ACCENT = "a3392c"  # rojo del boletín (sin almohadilla), color del propio reproductor
-IVOOX_PLAYER_HEIGHT = 200
+IVOOX_MP3_TEMPLATE = "https://www.ivoox.com/listen_mn_{episode_id}_1.mp3"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("planet")
@@ -199,21 +198,21 @@ def extract_thumbnail(raw_entry) -> str | None:
     return match.group(1) if match else None
 
 
-def ivoox_embed_src(entry_link: str) -> str | None:
+def ivoox_audio_src(entry_link: str) -> str | None:
     match = IVOOX_ID_RE.search(entry_link)
     if not match:
         return None
     episode_id = match.group(1) or match.group(2)
-    return f"https://www.ivoox.com/player_ej_{episode_id}_4_1.html?c1={IVOOX_ACCENT}"
+    return IVOOX_MP3_TEMPLATE.format(episode_id=episode_id)
 
 
 def detect_media(entry_link: str, raw_entry, cache: dict) -> tuple[str, str | None, int | None, str | None]:
     domain = urlparse(entry_link).netloc.lower()
 
     if IVOOX_DOMAIN in domain:
-        src = ivoox_embed_src(entry_link)
+        src = ivoox_audio_src(entry_link)
         if src:
-            return "audio", src, IVOOX_PLAYER_HEIGHT, None
+            return "audio_direct", src, None, None
         log.warning("No pude extraer el ID de episodio de iVoox en: %s", entry_link)
         # seguimos abajo e intentamos al menos sacar una imagen del feed
 
@@ -337,3 +336,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

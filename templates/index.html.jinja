@@ -19,6 +19,19 @@
       <div class="entry-body">
         <p class="source">{{ entry.feed_title }}</p>
         <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
+
+        {% if entry.media_kind == "video" and entry.media_src %}
+        <div class="media media-video">
+          <iframe src="{{ entry.media_src }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        {% elif entry.media_kind == "audio" and entry.media_src %}
+        <div class="media media-audio">
+          <iframe src="{{ entry.media_src }}" loading="lazy" style="height: {{ entry.media_height or 90 }}px;"></iframe>
+        </div>
+        {% elif entry.media_kind == "image" and entry.media_image %}
+        <img class="media-thumb" src="{{ entry.media_image }}" alt="" loading="lazy">
+        {% endif %}
+
         {% if entry.summary %}
         <p class="summary">{{ entry.summary }}</p>
         {% endif %}

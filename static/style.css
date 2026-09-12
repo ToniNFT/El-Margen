@@ -73,11 +73,12 @@ body {
 }
 
 .source {
-  margin: 0 0 2px;
+  margin: 0 0 4px;
   font-family: ui-monospace, "SF Mono", "Courier New", monospace;
-  font-size: 0.72rem;
-  color: var(--meta);
-  letter-spacing: 0.02em;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--stamp-red);
+  letter-spacing: 0.01em;
 }
 
 .title {

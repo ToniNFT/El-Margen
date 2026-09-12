@@ -39,21 +39,30 @@ OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 SITE_TITLE = "El Margen"
 SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias..."
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido
-MAX_TOTAL_ENTRIES = 300    # límite total de entradas en la página
+MAX_TOTAL_ENTRIES = 80     # límite total de entradas en la página
 OEMBED_TIMEOUT = 8         # segundos
 OEMBED_CACHE_DAYS = 14     # cuánto confiar en un resultado de oEmbed guardado
 
-# Plataformas reconocidas vía oEmbed: (fragmento de dominio, endpoint, tipo)
+# Plataformas reconocidas vía oEmbed estándar: (fragmento de dominio, endpoint, tipo)
 # "cualquier plataforma de vídeo/audio" que hable oEmbed se puede añadir aquí.
+# iVoox NO está aquí: no responde de forma fiable al oEmbed estándar, así que
+# se gestiona aparte con su propia plantilla de reproductor (ver IVOOX_ID_RE).
 OEMBED_PROVIDERS: list[tuple[str, str, str]] = [
     ("youtube.com", "https://www.youtube.com/oembed?format=json&url={url}", "video"),
     ("youtu.be", "https://www.youtube.com/oembed?format=json&url={url}", "video"),
     ("vimeo.com", "https://vimeo.com/api/oembed.json?url={url}", "video"),
     ("dailymotion.com", "https://www.dailymotion.com/services/oembed?url={url}", "video"),
-    ("ivoox.com", "https://www.ivoox.com/services/oembed.json?url={url}", "audio"),
     ("soundcloud.com", "https://soundcloud.com/oembed?format=json&url={url}", "audio"),
     ("spotify.com", "https://open.spotify.com/oembed?url={url}", "audio"),
 ]
+
+# iVoox: reproductor propio vía URL de widget con el ID numérico del episodio,
+# tal y como lo genera el propio botón "Insertar" de iVoox. El ID aparece en la
+# URL del episodio, típicamente como .../algo_rf_ID_1.html o ivoox.com/ID
+IVOOX_DOMAIN = "ivoox.com"
+IVOOX_ID_RE = re.compile(r"_rf_(\d+)_|ivoox\.com/(\d+)(?:[/?]|$)")
+IVOOX_ACCENT = "a3392c"  # rojo del boletín (sin almohadilla), color del propio reproductor
+IVOOX_PLAYER_HEIGHT = 200
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("planet")
@@ -190,8 +199,23 @@ def extract_thumbnail(raw_entry) -> str | None:
     return match.group(1) if match else None
 
 
+def ivoox_embed_src(entry_link: str) -> str | None:
+    match = IVOOX_ID_RE.search(entry_link)
+    if not match:
+        return None
+    episode_id = match.group(1) or match.group(2)
+    return f"https://www.ivoox.com/player_ej_{episode_id}_4_1.html?c1={IVOOX_ACCENT}"
+
+
 def detect_media(entry_link: str, raw_entry, cache: dict) -> tuple[str, str | None, int | None, str | None]:
     domain = urlparse(entry_link).netloc.lower()
+
+    if IVOOX_DOMAIN in domain:
+        src = ivoox_embed_src(entry_link)
+        if src:
+            return "audio", src, IVOOX_PLAYER_HEIGHT, None
+        log.warning("No pude extraer el ID de episodio de iVoox en: %s", entry_link)
+        # seguimos abajo e intentamos al menos sacar una imagen del feed
 
     for provider_domain, endpoint, kind in OEMBED_PROVIDERS:
         if provider_domain in domain:

@@ -1,0 +1,7 @@
+# Un feed RSS/Atom por línea. Las líneas que empiezan por # se ignoran.
+# Sustituye estos ejemplos por los blogs que quieras seguir.
+
+https://danielmarin.naukas.com/feed/
+https://www.migueljara.com/feed/
+https://corbettreport.com/feed/
+https://www.voltairenet.org/spip.php?page=backend

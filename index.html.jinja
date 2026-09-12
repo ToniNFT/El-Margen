@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site_title }}</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <h1>{{ site_title }}</h1>
+    <p class="tagline">{{ site_tagline }}</p>
+  </header>
+
+  <main class="dispatch">
+    {% for entry in entries %}
+    <article class="entry">
+      <img class="favicon" src="{{ entry.favicon }}" alt="" width="16" height="16" loading="lazy">
+      <div class="entry-body">
+        <p class="source">{{ entry.feed_title }}</p>
+        <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
+        {% if entry.summary %}
+        <p class="summary">{{ entry.summary }}</p>
+        {% endif %}
+      </div>
+      <time class="stamp">{{ entry.relative_time }}</time>
+    </article>
+    {% else %}
+    <p class="empty">No se ha podido leer ningún feed todavía.</p>
+    {% endfor %}
+  </main>
+
+  <footer class="colophon">
+    <p>Actualizado el {{ generated_at }}</p>
+    <p>Generado con Planet El Margen</p>
+  </footer>
+</body>
+</html>

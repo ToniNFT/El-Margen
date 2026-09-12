@@ -26,7 +26,7 @@
         </div>
         {% elif entry.media_kind == "audio" and entry.media_src %}
         <div class="media media-audio">
-          <iframe src="{{ entry.media_src }}" loading="lazy" style="height: {{ entry.media_height or 90 }}px;"></iframe>
+          <iframe src="{{ entry.media_src }}" loading="lazy" style="height: {{ entry.media_height or 200 }}px;"></iframe>
         </div>
         {% elif entry.media_kind == "image" and entry.media_image %}
         <img class="media-thumb" src="{{ entry.media_image }}" alt="" loading="lazy">

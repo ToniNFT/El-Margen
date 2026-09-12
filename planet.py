@@ -39,7 +39,7 @@ OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 SITE_TITLE = "El Margen"
 SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias..."
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido
-MAX_TOTAL_ENTRIES = 300     # límite total de entradas en la página
+MAX_TOTAL_ENTRIES = 80     # límite total de entradas en la página
 OEMBED_TIMEOUT = 8         # segundos
 OEMBED_CACHE_DAYS = 14     # cuánto confiar en un resultado de oEmbed guardado
 
@@ -126,15 +126,30 @@ def fetch_oembed(entry_link: str, endpoint_template: str) -> tuple[str | None, i
     api_url = endpoint_template.format(url=quote(entry_link, safe=""))
     try:
         resp = requests.get(api_url, timeout=OEMBED_TIMEOUT, headers={"User-Agent": "PlanetElMargen/1.0"})
-        resp.raise_for_status()
+    except requests.RequestException as exc:
+        log.warning("oEmbed: no pude conectar para %s: %s", entry_link, exc)
+        return None, None
+
+    if not resp.ok:
+        log.warning(
+            "oEmbed: %s respondió %s para %s — cuerpo: %s",
+            api_url, resp.status_code, entry_link, resp.text[:200].replace("\n", " "),
+        )
+        return None, None
+
+    try:
         data = resp.json()
-    except (requests.RequestException, ValueError) as exc:
-        log.warning("oEmbed falló para %s: %s", entry_link, exc)
+    except ValueError:
+        log.warning("oEmbed: respuesta no es JSON válido para %s — cuerpo: %s", entry_link, resp.text[:200].replace("\n", " "))
         return None, None
 
     html = data.get("html", "")
-    match = re.search(r'src="([^"]+)"', html)
-    if not match or not match.group(1).startswith("https://"):
+    match = re.search(r'src=["\']([^"\']+)["\']', html)
+    if not match:
+        log.warning("oEmbed: la respuesta de %s no trae un iframe reconocible — html: %s", entry_link, html[:200])
+        return None, None
+    if not match.group(1).startswith("https://"):
+        log.warning("oEmbed: el src encontrado para %s no es https: %s", entry_link, match.group(1))
         return None, None
     return match.group(1), data.get("height")
 
@@ -148,7 +163,10 @@ def get_media_via_oembed(entry_link: str, endpoint_template: str, cache: dict) -
             return cached.get("src"), cached.get("height")
 
     src, height = fetch_oembed(entry_link, endpoint_template)
-    cache[entry_link] = {"src": src, "height": height, "fetched": now.isoformat()}
+    if src:
+        # Solo guardamos en caché los éxitos: un fallo puntual no debe
+        # quedar "atascado" durante OEMBED_CACHE_DAYS días.
+        cache[entry_link] = {"src": src, "height": height, "fetched": now.isoformat()}
     return src, height
 
 

@@ -122,6 +122,13 @@ body {
   border-radius: 2px;
 }
 
+.media-audio-direct {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  accent-color: var(--stamp-red);
+}
+
 .media-thumb {
   display: block;
   width: 100%;
@@ -173,4 +180,3 @@ body {
     margin-top: 2px;
   }
 }
-

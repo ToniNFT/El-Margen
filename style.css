@@ -1,0 +1,140 @@
+/* Planet El Margen — boletín de despacho, papel envejecido + tinta de cartel */
+
+:root {
+  --paper: #f2ede1;
+  --paper-edge: #e6dfcd;
+  --ink: #1c1a16;
+  --ink-soft: #4a453b;
+  --meta: #857a63;
+  --rule: #d3c7a8;
+  --stamp-red: #a3392c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 20px 60px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .entry { transition: background-color 0.15s ease; }
+}
+
+.masthead {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 0 24px;
+  border-bottom: 3px double var(--rule);
+}
+
+.masthead h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.tagline {
+  margin: 6px 0 0;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
+
+.dispatch {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  column-gap: 14px;
+  align-items: start;
+  padding: 18px 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.entry:hover {
+  background: var(--paper-edge);
+}
+
+.favicon {
+  margin-top: 5px;
+  border-radius: 2px;
+}
+
+.entry-body {
+  min-width: 0;
+}
+
+.source {
+  margin: 0 0 2px;
+  font-family: ui-monospace, "SF Mono", "Courier New", monospace;
+  font-size: 0.72rem;
+  color: var(--meta);
+  letter-spacing: 0.02em;
+}
+
+.title {
+  display: block;
+  font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.title:hover {
+  color: var(--stamp-red);
+  text-decoration: underline;
+}
+
+.summary {
+  margin: 6px 0 0;
+  font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.stamp {
+  font-family: ui-monospace, "SF Mono", "Courier New", monospace;
+  font-size: 0.72rem;
+  color: var(--meta);
+  white-space: nowrap;
+  margin-top: 5px;
+}
+
+.empty {
+  padding: 40px 8px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.colophon {
+  max-width: 640px;
+  margin: 32px auto 0;
+  font-family: ui-monospace, "SF Mono", "Courier New", monospace;
+  font-size: 0.72rem;
+  color: var(--meta);
+}
+
+.colophon p {
+  margin: 2px 0;
+}
+
+@media (max-width: 480px) {
+  .entry {
+    grid-template-columns: 18px 1fr;
+  }
+  .stamp {
+    grid-column: 2;
+    margin-top: 2px;
+  }
+}

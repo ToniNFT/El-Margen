@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="masthead">
-    <h1>{{ site_title }}</h1>
+    <h1><a href="{{ site_url }}">{{ site_title }}</a></h1>
     <p class="tagline">{{ site_tagline }}</p>
   </header>
 
@@ -17,7 +17,7 @@
     <article class="entry">
       <img class="favicon" src="{{ entry.favicon }}" alt="" width="24" height="24" loading="lazy">
       <div class="entry-body">
-        <p class="source">{{ entry.feed_title }}</p>
+        <p class="source"><a href="{{ entry.site_url }}" target="_blank" rel="noopener">{{ entry.feed_title }}</a></p>       
         <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
 
         {% if entry.media_kind == "video" and entry.media_src %}
@@ -51,5 +51,4 @@
   </footer>
 </body>
 </html>
-</body>
-</html>
+

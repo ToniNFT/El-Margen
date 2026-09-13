@@ -106,7 +106,7 @@ def to_datetime(entry) -> dt.datetime:
     return dt.datetime.now(dt.timezone.utc)
 
 
-def clean_summary(raw: str, max_chars: int = 440) -> str:
+def clean_summary(raw: str, max_chars: int = 330) -> str:
     text = re.sub(r"<[^>]+>", " ", raw or "")
     text = re.sub(r"\s+", " ", text).strip()
     if len(text) > max_chars:

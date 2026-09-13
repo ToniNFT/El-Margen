@@ -37,6 +37,7 @@ OUTPUT_FILE = OUTPUT_DIR / "index.html"
 OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 
 SITE_TITLE = "El Margen"
+SITE_URL = "https://toninft.github.io/El-Margen/"
 SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias...\nEn esta era se mezclan grano y paja.\nDe su fino pico depende la pitanza."
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido
 MAX_TOTAL_ENTRIES = 300     # límite total de entradas en la página
@@ -289,6 +290,7 @@ def build_site(entries: list[Entry]) -> None:
     view = [
         {
             "feed_title": e.feed_title,
+            "site_url": e.site_url,
             "title": e.title,
             "link": e.link,
             "summary": e.summary,
@@ -306,6 +308,7 @@ def build_site(entries: list[Entry]) -> None:
     template = env.get_template("index.html.jinja")
     html = template.render(
         site_title=SITE_TITLE,
+        site_url=SITE_URL,
         site_tagline=SITE_TAGLINE,
         entries=view,
         generated_at=now.strftime("%d/%m/%Y %H:%M UTC"),

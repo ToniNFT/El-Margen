@@ -37,7 +37,7 @@ OUTPUT_FILE = OUTPUT_DIR / "index.html"
 OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 
 SITE_TITLE = "El Margen"
-SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias...<br>En esta era se mezclan grano y paja. De su fino pico depende la pitanza."
+SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias...¨ <br> ¨En esta era se mezclan grano y paja. De su fino pico depende la pitanza."
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido
 MAX_TOTAL_ENTRIES = 300     # límite total de entradas en la página
 OEMBED_TIMEOUT = 8         # segundos

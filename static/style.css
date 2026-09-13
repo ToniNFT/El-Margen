@@ -43,6 +43,7 @@ body {
   font-style: italic;
   color: var(--ink-soft);
   font-size: 1rem;
+  white-space: pre-line;
 }
 
 .dispatch {

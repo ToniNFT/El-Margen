@@ -48,7 +48,7 @@ https://www.bitchute.com/feeds/rss/channel/joeknowbody
 https://www.ivoox.com/feed_fg_f1902_filtro_1.xml
 https://www.youtube.com/feeds/videos.xml?channel_id=UCVV1X-VfXozGyXT8J_diUgQ
 https://www.youtube.com/feeds/videos.xml?channel_id=UCgCGQVUsheBffsteQkcSHCw
-https://www.brighteon.com/channel/alisha/rss/rss.xml
+https://www.brighteon.com/api-v3/channels/alisha/rss/rss.xml
 https://www.ivoox.com/feed_fg_f190073_filtro_1.xml
 https://www.ivoox.com/feed_fg_f1578820_filtro_1.xml
 https://www.youtube.com/feeds/videos.xml?channel_id=UCvj1M-6z0ywe-G2ujukC1ZA

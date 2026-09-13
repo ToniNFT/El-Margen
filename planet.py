@@ -42,7 +42,7 @@ SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias...\nEn esta era se
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido
 MAX_TOTAL_ENTRIES = 300     # límite total de entradas en la página
 OEMBED_TIMEOUT = 8         # segundos
-OEMBED_CACHE_DAYS = 1     # cuánto confiar en un resultado de oEmbed guardado
+OEMBED_CACHE_DAYS = 14     # cuánto confiar en un resultado de oEmbed guardado
 
 # Plataformas reconocidas vía oEmbed estándar: (fragmento de dominio, endpoint, tipo)
 # "cualquier plataforma de vídeo/audio" que hable oEmbed se puede añadir aquí.

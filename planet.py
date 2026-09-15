@@ -44,7 +44,7 @@ SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias...\nEn esta era se
 # para no mostrar nada. SITE_PHOTO_LINK puede apuntar a cualquier URL; si se
 # deja en None, la imagen se muestra sin enlace.
 SITE_PHOTO_URL = "https://raw.githubusercontent.com/ToniNFT/El-Margen/main/labradoras4.gif"
-SITE_PHOTO_ALT = "Bitcon-Cahs ¡Gracias!"
+SITE_PHOTO_ALT = "Bitcoin-Cash ¡Gracias!"
 SITE_PHOTO_CAPTION = "Haga click en la imagen para hacer una\ndonación a este blog en Bitcoin-Cash\n¡Gracias!"
 SITE_PHOTO_LINK = "bitcoincash:13tK7CJWaYkMMANrPSGffTsbwzRL6oxH8K"
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido

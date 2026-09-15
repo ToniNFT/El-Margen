@@ -39,6 +39,14 @@ OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 SITE_TITLE = "El Margen"
 SITE_URL = "https://toninft.github.io/El-Margen/"
 SITE_TAGLINE = "Conspiraciones. Contrainformación. Paranoias...\nEn esta era se mezclan grano y paja.\nDe su fino pico depende la pitanza."
+
+# Foto opcional debajo de la cabecera. Déjala en None (o SITE_PHOTO_URL = None)
+# para no mostrar nada. SITE_PHOTO_LINK puede apuntar a cualquier URL; si se
+# deja en None, la imagen se muestra sin enlace.
+SITE_PHOTO_URL = "https://github.com/ToniNFT/El-Margen/blob/main/labradoras4.gif"
+SITE_PHOTO_ALT = ""
+SITE_PHOTO_CAPTION = "Haga click en la imagen para hacer una\ndonación a este blog en Bitcoin-Cash\n¡Gracias!"
+SITE_PHOTO_LINK = "bitcoincash:13tK7CJWaYkMMANrPSGffTsbwzRL6oxH8K"
 ENTRIES_PER_FEED = 1       # cuántas entradas mostrar de cada blog seguido
 MAX_TOTAL_ENTRIES = 300     # límite total de entradas en la página
 OEMBED_TIMEOUT = 8         # segundos
@@ -310,6 +318,10 @@ def build_site(entries: list[Entry]) -> None:
         site_title=SITE_TITLE,
         site_url=SITE_URL,
         site_tagline=SITE_TAGLINE,
+        site_photo_url=SITE_PHOTO_URL,
+        site_photo_alt=SITE_PHOTO_ALT,
+        site_photo_caption=SITE_PHOTO_CAPTION,
+        site_photo_link=SITE_PHOTO_LINK,
         entries=view,
         generated_at=now.strftime("%d/%m/%Y %H:%M UTC"),
     )

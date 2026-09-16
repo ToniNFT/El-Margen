@@ -68,8 +68,8 @@ body {
 
 .masthead-photo img {
   display: block;
-  width: 100%;
-  max-height: 320px;
+  width: 80%;
+  max-height: 256px;
   object-fit: cover;
   border: 1px solid var(--rule);
   border-radius: 2px;

@@ -12,6 +12,15 @@
     <p class="tagline">{{ site_tagline }}</p>
   </header>
 
+  {% if site_photo_url %}
+  <div class="masthead-photo">
+    {% if site_photo_link %}<a href="{{ site_photo_link }}">{% endif %}
+      <img src="{{ site_photo_url }}" alt="{{ site_photo_alt }}" loading="lazy">
+      {% if site_photo_caption %}<p class="masthead-photo-caption">{{ site_photo_caption }}</p>{% endif %}
+    {% if site_photo_link %}</a>{% endif %}
+  </div>
+  {% endif %}
+
   <main class="dispatch">
     {% for entry in entries %}
     <article class="entry">
@@ -51,4 +60,3 @@
   </footer>
 </body>
 </html>
-

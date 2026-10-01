@@ -95,7 +95,7 @@ https://timefortruth.es/feed/
 https://pedrogarciaolivo.wordpress.com/feed/
 https://extramurosrevista.com/feed/
 https://www.migueljara.com/feed/
-https://www.revolucionintegral.org/index.php/itemlist?format=feed
+https://revolucionintegral.org/feed
 https://contraindicaciones.net/author/pablo/feed/
 https://arqueologiamericana.blogspot.com/feeds/posts/default
 https://montalk.net/rss

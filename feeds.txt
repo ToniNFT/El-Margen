@@ -2,7 +2,7 @@
 # Sustituye estos ejemplos por los blogs que quieras seguir.
 
 https://www.youtube.com/feeds/videos.xml?channel_id=UCGkwr0nuhvMrf7b2mzmlODQ
-https://news.bitcoin.com/es/feed/
+https://elbitcoin.org/index.xml
 https://www.meneame.net/rss
 https://www.ivoox.com/feed_fg_f1157431_filtro_1.xml
 https://haveibeenpwned.com/feed/breaches/

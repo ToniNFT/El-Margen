@@ -82,7 +82,6 @@ https://es.sott.net/xml_engine/signs_rss
 https://www.elmundotoday.com/feed/
 https://freemansperspective.com/feed/
 https://jonrappoport.substack.com/feed
-https://elbitcoin.org/feed/
 https://www.ritualypropaganda.com/feeds/posts/default
 https://creacionesimaginales.wordpress.com/feed/
 https://resistenciafrentealaviolencia.wordpress.com/feed/

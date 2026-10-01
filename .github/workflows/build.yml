@@ -2,7 +2,7 @@ name: Regenerar y publicar Planet El Margen
 
 on:
   schedule:
-    - cron: "8 * * * *"   # cada hora, en punto (UTC)
+    - cron: "48 * * * *"   # cada hora, en punto (UTC)
   workflow_dispatch: {}    # permite lanzarlo a mano desde la pestaña Actions
   push:
     branches: [main]

@@ -34,6 +34,15 @@
   <main class="grid wrap">
     {% for entry in entries %}
     <article class="card">
+      <div class="card-info">
+        <img class="favicon" src="{{ entry.favicon }}" alt="" width="24" height="24" loading="lazy">
+        <div class="card-text">
+          <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
+          <p class="source"><a href="{{ entry.site_url }}" target="_blank" rel="noopener">{{ entry.feed_title }}</a></p>
+          <time class="stamp">{{ entry.relative_time }}</time>
+        </div>
+      </div>
+
       {% if entry.media_kind == "video" and entry.media_src %}
       <div class="media media-video">
         <iframe src="{{ entry.media_src }}" title="{{ entry.title }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -51,15 +60,6 @@
         <img src="{{ entry.media_image }}" alt="" loading="lazy">
       </a>
       {% endif %}
-
-      <div class="card-info">
-        <img class="favicon" src="{{ entry.favicon }}" alt="" width="24" height="24" loading="lazy">
-        <div class="card-text">
-          <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
-          <p class="source"><a href="{{ entry.site_url }}" target="_blank" rel="noopener">{{ entry.feed_title }}</a></p>
-          <time class="stamp">{{ entry.relative_time }}</time>
-        </div>
-      </div>
 
       {% if entry.summary %}
       <p class="summary">{{ entry.summary }}</p>

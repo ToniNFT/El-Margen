@@ -57,6 +57,15 @@ body {
   white-space: pre-line;
 }
 
+.subscribe {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.subscribe a { color: var(--stamp-red); text-decoration: none; }
+.subscribe a:hover { text-decoration: underline; }
+
 .masthead-photo { margin-top: 20px; }
 
 .masthead-photo a {

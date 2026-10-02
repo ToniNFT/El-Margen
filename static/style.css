@@ -17,6 +17,7 @@
 
 body {
   margin: 0;
+  overflow-x: hidden;
   padding: 0 0 60px;
   background: var(--paper);
   color: var(--ink);
@@ -93,7 +94,7 @@ body {
   display: grid;
   /* tantas columnas como quepan, mínimo ~300px cada una */
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  gap: 28px 20px;
+  gap: 0 24px;
   margin-top: 24px;
   align-items: start;
 }
@@ -102,9 +103,12 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background: transparent;
-  border-radius: 6px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
 }
+
+.card > * { max-width: 100%; }
+img, iframe, audio { max-width: 100%; }
 
 @media (prefers-reduced-motion: no-preference) {
   .card { transition: background-color 0.15s ease; }
@@ -173,7 +177,7 @@ body {
   grid-template-columns: 24px 1fr;
   column-gap: 12px;
   align-items: start;
-  padding: 12px 2px 0;
+  padding: 0 2px 10px;
 }
 
 .favicon {
@@ -223,7 +227,7 @@ body {
 }
 
 .summary {
-  margin: 8px 2px 0 38px; /* alineado con el texto, bajo el favicon */
+  margin: 10px 2px 0;
   font-family: var(--sans);
   font-size: 0.88rem;
   line-height: 1.5;
@@ -250,42 +254,9 @@ body {
 
 .colophon p { margin: 2px 0; }
 
-/* ---------- Móvil: una columna, vídeo a sangre ---------- */
+/* ---------- Móvil: una columna que nunca excede la pantalla ---------- */
 
 @media (max-width: 599px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-    margin-top: 8px;
-    /* la rejilla ocupa todo el ancho; las tarjetas gestionan su propio margen */
-    padding-inline: 0;
-  }
-
-  .card {
-    padding-block: 16px;
-    border-bottom: 1px solid var(--rule);
-    border-radius: 0;
-  }
-
-  /* los medios llegan de borde a borde de la pantalla */
-  .media,
-  .media-video,
-  .media-thumb,
-  .media-audio iframe {
-    border-radius: 0;
-    border-left: 0;
-    border-right: 0;
-  }
-
-  .media-audio-direct {
-    border-radius: 0;
-    border-left: 0;
-    border-right: 0;
-    padding-inline: var(--gutter);
-  }
-
-  .card-info { padding: 12px var(--gutter) 0; }
-  .summary { margin: 8px var(--gutter) 0 calc(var(--gutter) + 36px); }
-
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 8px; }
   .masthead-photo a { width: 100%; }
 }

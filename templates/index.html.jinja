@@ -5,25 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ site_title }}</title>
   <link rel="stylesheet" href="style.css">
-  
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVXJH213L3"></script>
   <script>
    window.dataLayer = window.dataLayer || [];
    function gtag(){dataLayer.push(arguments);}
    gtag('js', new Date());
-    
+
    gtag('config', 'G-GVXJH213L3');
   </script>
 </head>
 <body>
-  <header class="masthead">
+  <header class="masthead wrap">
     <h1><a href="{{ site_url }}">{{ site_title }}</a></h1>
     <p class="tagline">{{ site_tagline }}</p>
   </header>
 
   {% if site_photo_url %}
-  <div class="masthead-photo">
+  <div class="masthead-photo wrap">
     {% if site_photo_link %}<a href="{{ site_photo_link }}">{% endif %}
       <img src="{{ site_photo_url }}" alt="{{ site_photo_alt }}" loading="lazy">
       {% if site_photo_caption %}<p class="masthead-photo-caption">{{ site_photo_caption }}</p>{% endif %}
@@ -31,40 +31,46 @@
   </div>
   {% endif %}
 
-  <main class="dispatch">
+  <main class="grid wrap">
     {% for entry in entries %}
-    <article class="entry">
-      <img class="favicon" src="{{ entry.favicon }}" alt="" width="24" height="24" loading="lazy">
-      <div class="entry-body">
-        <p class="source"><a href="{{ entry.site_url }}" target="_blank" rel="noopener">{{ entry.feed_title }}</a></p>       
-        <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
-
-        {% if entry.media_kind == "video" and entry.media_src %}
-        <div class="media media-video">
-          <iframe src="{{ entry.media_src }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        {% elif entry.media_kind == "audio" and entry.media_src %}
-        <div class="media media-audio">
-          <iframe src="{{ entry.media_src }}" loading="lazy" scrolling="no" allow="autoplay; encrypted-media" referrerpolicy="no-referrer-when-downgrade" style="height: {{ entry.media_height or 200 }}px;"></iframe>
-        </div>
-        {% elif entry.media_kind == "audio_direct" and entry.media_src %}
-        <audio class="media-audio-direct" controls preload="none" src="{{ entry.media_src }}"></audio>
-        {% elif entry.media_kind == "image" and entry.media_image %}
-        <img class="media-thumb" src="{{ entry.media_image }}" alt="" loading="lazy">
-        {% endif %}
-
-        {% if entry.summary %}
-        <p class="summary">{{ entry.summary }}</p>
-        {% endif %}
+    <article class="card">
+      {% if entry.media_kind == "video" and entry.media_src %}
+      <div class="media media-video">
+        <iframe src="{{ entry.media_src }}" title="{{ entry.title }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
-      <time class="stamp">{{ entry.relative_time }}</time>
+      {% elif entry.media_kind == "audio" and entry.media_src %}
+      <div class="media media-audio">
+        <iframe src="{{ entry.media_src }}" title="{{ entry.title }}" loading="lazy" scrolling="no" allow="autoplay; encrypted-media" referrerpolicy="no-referrer-when-downgrade" style="height: {{ entry.media_height or 200 }}px;"></iframe>
+      </div>
+      {% elif entry.media_kind == "audio_direct" and entry.media_src %}
+      <div class="media media-audio-direct">
+        <audio controls preload="none" src="{{ entry.media_src }}"></audio>
+      </div>
+      {% elif entry.media_kind == "image" and entry.media_image %}
+      <a class="media media-thumb" href="{{ entry.link }}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <img src="{{ entry.media_image }}" alt="" loading="lazy">
+      </a>
+      {% endif %}
+
+      <div class="card-info">
+        <img class="favicon" src="{{ entry.favicon }}" alt="" width="24" height="24" loading="lazy">
+        <div class="card-text">
+          <a class="title" href="{{ entry.link }}" target="_blank" rel="noopener">{{ entry.title }}</a>
+          <p class="source"><a href="{{ entry.site_url }}" target="_blank" rel="noopener">{{ entry.feed_title }}</a></p>
+          <time class="stamp">{{ entry.relative_time }}</time>
+        </div>
+      </div>
+
+      {% if entry.summary %}
+      <p class="summary">{{ entry.summary }}</p>
+      {% endif %}
     </article>
     {% else %}
     <p class="empty">No se ha podido leer ningún feed todavía.</p>
     {% endfor %}
   </main>
 
-  <footer class="colophon">
+  <footer class="colophon wrap">
     <p>Actualizado el {{ generated_at }}</p>
     <p>Generado con Planet El Margen</p>
   </footer>

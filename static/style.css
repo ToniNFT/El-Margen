@@ -57,14 +57,15 @@ body {
   white-space: pre-line;
 }
 
-.subscribe {
-  margin: 10px 0 0;
-  font-family: var(--mono);
-  font-size: 0.8rem;
+.subscribe { margin: 10px 0 0; line-height: 0; }
+
+.subscribe a {
+  display: inline-block;
+  color: var(--stamp-red);
 }
 
-.subscribe a { color: var(--stamp-red); text-decoration: none; }
-.subscribe a:hover { text-decoration: underline; }
+.subscribe a:hover,
+.subscribe a:focus-visible { color: var(--ink); }
 
 .masthead-photo { margin-top: 20px; }
 

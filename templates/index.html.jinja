@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ site_title }}</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="alternate" type="application/rss+xml" title="{{ site_title }}" href="{{ feed_url }}">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-GVXJH213L3"></script>
@@ -20,6 +23,7 @@
   <header class="masthead wrap">
     <h1><a href="{{ site_url }}">{{ site_title }}</a></h1>
     <p class="tagline">{{ site_tagline }}</p>
+    <p class="subscribe"><a href="{{ feed_url }}">Suscribirse por RSS</a></p>
   </header>
 
   {% if site_photo_url %}

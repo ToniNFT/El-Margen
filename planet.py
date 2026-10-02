@@ -15,6 +15,7 @@ Pensado para ejecutarse periódicamente vía cron o systemd timer.
 from __future__ import annotations
 
 import datetime as dt
+import email.utils
 import json
 import logging
 import re
@@ -23,6 +24,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import quote, urlparse
+from xml.sax.saxutils import escape
 
 import feedparser
 import requests
@@ -34,6 +36,7 @@ TEMPLATE_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
 OUTPUT_DIR = BASE_DIR / "output"
 OUTPUT_FILE = OUTPUT_DIR / "index.html"
+FEED_FILE = OUTPUT_DIR / "feed.xml"
 OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 
 SITE_TITLE = "El Margen"
@@ -290,6 +293,37 @@ def relative_spanish(published: dt.datetime, now: dt.datetime) -> str:
     return "Hace 1 año" if years == 1 else f"Hace {years} años"
 
 
+def build_rss(entries: list[Entry], now: dt.datetime) -> str:
+    """Genera un RSS 2.0 con las mismas entradas que se muestran en la página."""
+    tagline = " ".join(SITE_TAGLINE.split())
+    items = []
+    for e in entries:
+        items.append(
+            "    <item>\n"
+            f"      <title>{escape(e.title)}</title>\n"
+            f"      <link>{escape(e.link)}</link>\n"
+            f'      <guid isPermaLink="true">{escape(e.link)}</guid>\n'
+            f"      <pubDate>{email.utils.format_datetime(e.published)}</pubDate>\n"
+            f"      <dc:creator>{escape(e.feed_title)}</dc:creator>\n"
+            f"      <description>{escape(e.summary)}</description>\n"
+            "    </item>"
+        )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" '
+        'xmlns:dc="http://purl.org/dc/elements/1.1/">\n'
+        "  <channel>\n"
+        f"    <title>{escape(SITE_TITLE)}</title>\n"
+        f"    <link>{escape(SITE_URL)}</link>\n"
+        f"    <description>{escape(tagline)}</description>\n"
+        "    <language>es</language>\n"
+        f"    <lastBuildDate>{email.utils.format_datetime(now)}</lastBuildDate>\n"
+        f'    <atom:link href="{escape(SITE_URL)}feed.xml" rel="self" type="application/rss+xml"/>\n'
+        + "\n".join(items)
+        + "\n  </channel>\n</rss>\n"
+    )
+
+
 def build_site(entries: list[Entry]) -> None:
     now = dt.datetime.now(dt.timezone.utc)
     entries.sort(key=lambda e: e.published, reverse=True)
@@ -324,13 +358,19 @@ def build_site(entries: list[Entry]) -> None:
         site_photo_link=SITE_PHOTO_LINK,
         entries=view,
         generated_at=now.strftime("%d/%m/%Y %H:%M UTC"),
+        feed_url=SITE_URL + "feed.xml",
     )
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_FILE.write_text(html, encoding="utf-8")
 
+    FEED_FILE.write_text(build_rss(entries, now), encoding="utf-8")
+
+    # Copia todo lo de static/ (CSS, favicon, iconos...) al sitio generado
     if STATIC_DIR.exists():
-        shutil.copy(STATIC_DIR / "style.css", OUTPUT_DIR / "style.css")
+        for asset in STATIC_DIR.iterdir():
+            if asset.is_file():
+                shutil.copy(asset, OUTPUT_DIR / asset.name)
 
     log.info("Generado %s con %d entradas.", OUTPUT_FILE, len(view))
 
@@ -351,4 +391,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

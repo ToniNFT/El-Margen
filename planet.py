@@ -190,24 +190,58 @@ def get_media_via_oembed(entry_link: str, endpoint_template: str, cache: dict) -
     return src, height
 
 
+IMG_TAG_RE = re.compile(r'<img\b[^>]*?\bsrc\s*=\s*["\']([^"\']+)["\'][^>]*>', re.I)
+
+
+def upgrade_image_url(url: str) -> str:
+    """Pide la versión grande de miniaturas conocidas (Blogger, WordPress)."""
+    # Blogger: .../s72-c/foto.jpg  ->  .../s1600/foto.jpg
+    url = re.sub(r"/(?:s|w|h)\d+(?:-[a-z0-9]+)*/", "/s1600/", url)
+    # WordPress: foto-150x150.jpg -> foto.jpg
+    url = re.sub(r"-\d{2,4}x\d{2,4}(\.(?:jpe?g|png|webp|gif))(\?.*)?$", r"\1\2", url, flags=re.I)
+    return url
+
+
+def _area(item: dict) -> int:
+    try:
+        return int(item.get("width") or 0) * int(item.get("height") or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
 def extract_thumbnail(raw_entry) -> str | None:
-    media_thumb = raw_entry.get("media_thumbnail")
-    if media_thumb:
-        return media_thumb[0].get("url")
+    candidates: list[tuple[int, int, str]] = []  # (área, prioridad, url)
 
     for media in raw_entry.get("media_content", []):
         if media.get("medium") == "image" or media.get("type", "").startswith("image"):
-            return media.get("url")
+            candidates.append((_area(media), 3, media.get("url")))
 
     for link_info in raw_entry.get("links", []):
         if link_info.get("rel") == "enclosure" and link_info.get("type", "").startswith("image"):
-            return link_info.get("href")
+            candidates.append((0, 3, link_info.get("href")))
 
-    html_source = raw_entry.get("summary", "")
-    if not html_source and raw_entry.get("content"):
-        html_source = raw_entry["content"][0].get("value", "")
-    match = re.search(r'<img[^>]+src="([^"]+)"', html_source)
-    return match.group(1) if match else None
+    html_sources = [raw_entry.get("summary", "")]
+    for c in raw_entry.get("content", []) or []:
+        html_sources.append(c.get("value", ""))
+    for html in html_sources:
+        for tag in IMG_TAG_RE.finditer(html):
+            src = tag.group(1)
+            if re.search(r'(width|height)=["\']?[0-2]["\']?[\s>/]', tag.group(0)):
+                continue  # píxeles de seguimiento
+            if any(x in src for x in ("feedburner", "pixel", "emoji", "gravatar")):
+                continue
+            candidates.append((0, 2, src))
+
+    # Las miniaturas (media_thumbnail) suelen ser diminutas: solo se usan
+    # si el feed no ofrece ninguna otra imagen.
+    thumbs = [(_area(t), 1, t.get("url")) for t in raw_entry.get("media_thumbnail", [])]
+
+    candidates = [c for c in candidates if c[2]]
+    pool = candidates or [t for t in thumbs if t[2]]
+    if not pool:
+        return None
+    best = max(pool, key=lambda c: (c[0], c[1]))
+    return upgrade_image_url(best[2])
 
 
 def ivoox_audio_src(entry_link: str) -> str | None:
@@ -391,5 +425,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

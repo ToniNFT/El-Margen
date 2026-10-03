@@ -165,7 +165,7 @@ img, iframe, audio { max-width: 100%; }
 }
 
 .media-thumb {
-  aspect-ratio: 16 / 9;
+  display: block;
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: 6px;
@@ -175,8 +175,9 @@ img, iframe, audio { max-width: 100%; }
 .media-thumb img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;   /* no recorta; si es muy alta, se ve entera con bandas */
 }
 
 /* ---------- Información de la tarjeta ---------- */

@@ -16,11 +16,13 @@ from __future__ import annotations
 
 import datetime as dt
 import email.utils
+import hashlib
 import json
 import logging
 import re
 import shutil
 import sys
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import quote, urlparse
@@ -38,6 +40,16 @@ OUTPUT_DIR = BASE_DIR / "output"
 OUTPUT_FILE = OUTPUT_DIR / "index.html"
 FEED_FILE = OUTPUT_DIR / "feed.xml"
 OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
+FEED_CACHE_DIR = BASE_DIR / ".feed_cache"   # último XML válido de cada feed
+
+FEED_TIMEOUT = 20          # segundos por descarga de feed
+FEED_RETRIES = 4           # intentos antes de recurrir a la caché
+FEED_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    "Accept": "application/atom+xml,application/rss+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "es-ES,es;q=0.9",
+}
 
 SITE_TITLE = "El Margen"
 SITE_URL = "https://toninft.github.io/El-Margen/"
@@ -276,10 +288,64 @@ def detect_media(entry_link: str, raw_entry, cache: dict) -> tuple[str, str | No
     return "none", None, None, None
 
 
+def _feed_cache_path(url: str) -> Path:
+    digest = hashlib.sha1(url.encode("utf-8")).hexdigest()[:16]
+    return FEED_CACHE_DIR / f"{digest}.xml"
+
+
+def _looks_like_feed(content: bytes) -> bool:
+    head = content[:2000].lstrip().lower()
+    if head.startswith(b"<!doctype html") or head.startswith(b"<html"):
+        return False
+    return b"<feed" in head or b"<rss" in head or b"<rdf:rdf" in head
+
+
+def download_feed(url: str) -> bytes | None:
+    """Descarga el feed con reintentos; devuelve el contenido solo si parece XML de feed."""
+    for attempt in range(1, FEED_RETRIES + 1):
+        try:
+            resp = requests.get(url, headers=FEED_HEADERS, timeout=FEED_TIMEOUT)
+            if resp.status_code == 200 and _looks_like_feed(resp.content):
+                return resp.content
+            log.warning(
+                "Feed %s intento %d/%d: status=%s content-type=%s inicio=%r",
+                url, attempt, FEED_RETRIES, resp.status_code,
+                resp.headers.get("content-type"), resp.text[:120],
+            )
+        except requests.RequestException as exc:
+            log.warning("Feed %s intento %d/%d: error de red: %s", url, attempt, FEED_RETRIES, exc)
+        if attempt < FEED_RETRIES:
+            time.sleep(2 ** (attempt - 1))  # 1s, 2s, 4s...
+    return None
+
+
+def load_feed(url: str):
+    """Devuelve el feed ya parseado: descargado, o desde la caché del último feed bueno."""
+    cache_path = _feed_cache_path(url)
+    content = download_feed(url)
+    if content is not None:
+        parsed = feedparser.parse(content)
+        if parsed.entries:
+            try:
+                FEED_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+                cache_path.write_bytes(content)
+            except OSError as exc:
+                log.warning("No pude guardar la caché de %s: %s", url, exc)
+            return parsed
+        log.warning("Feed %s descargado pero sin entradas válidas (%s)", url, parsed.get("bozo_exception"))
+
+    if cache_path.exists():
+        parsed = feedparser.parse(cache_path.read_bytes())
+        if parsed.entries:
+            log.warning("Uso la copia en caché de %s", url)
+            return parsed
+    return None
+
+
 def fetch_feed(url: str, cache: dict) -> list[Entry]:
-    parsed = feedparser.parse(url, request_headers={"User-Agent": "PlanetElMargen/1.0"})
-    if parsed.bozo and not parsed.entries:
-        log.warning("Feed con problemas, lo salto: %s (%s)", url, parsed.bozo_exception)
+    parsed = load_feed(url)
+    if parsed is None:
+        log.warning("Feed con problemas y sin caché, lo salto: %s", url)
         return []
 
     feed_title = parsed.feed.get("title", url)

@@ -42,8 +42,8 @@ FEED_FILE = OUTPUT_DIR / "feed.xml"
 OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 FEED_CACHE_DIR = BASE_DIR / ".feed_cache"   # último XML válido de cada feed
 
-FEED_TIMEOUT = 20          # segundos por descarga de feed
-FEED_RETRIES = 4           # intentos antes de recurrir a la caché
+FEED_TIMEOUT = 2          # segundos por descarga de feed
+FEED_RETRIES = 1           # intentos antes de recurrir a la caché
 FEED_HEADERS = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                   "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
@@ -319,10 +319,26 @@ def download_feed(url: str) -> bytes | None:
     return None
 
 
+YT_CHANNEL_RE = re.compile(r"^(https?://www\.youtube\.com/feeds/videos\.xml\?)channel_id=UC([\w-]+)$")
+
+
+def youtube_fallback_url(url: str) -> str | None:
+    """El feed de un canal (UC...) tiene un gemelo como lista de subidas (UU...)."""
+    match = YT_CHANNEL_RE.match(url)
+    if not match:
+        return None
+    return f"{match.group(1)}playlist_id=UU{match.group(2)}"
+
+
 def load_feed(url: str):
     """Devuelve el feed ya parseado: descargado, o desde la caché del último feed bueno."""
     cache_path = _feed_cache_path(url)
     content = download_feed(url)
+    if content is None:
+        alt = youtube_fallback_url(url)
+        if alt:
+            log.warning("Pruebo el feed alternativo de YouTube: %s", alt)
+            content = download_feed(alt)
     if content is not None:
         parsed = feedparser.parse(content)
         if parsed.entries:

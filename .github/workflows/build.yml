@@ -31,6 +31,16 @@ jobs:
       - name: Instalar dependencias
         run: pip install -r requirements.txt
 
+      - name: Restaurar caché de feeds
+        uses: actions/cache@v4
+        with:
+          path: |
+            .feed_cache
+            .oembed_cache.json
+          key: planet-cache-${{ github.run_id }}
+          restore-keys: |
+            planet-cache-
+
       - name: Generar el sitio
         run: python3 planet.py
 

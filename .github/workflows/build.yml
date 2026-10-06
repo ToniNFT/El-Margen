@@ -37,7 +37,7 @@ jobs:
           path: |
             .feed_cache
             .oembed_cache.json
-          key: planet-cache-${{ github.run_id }}
+          key: planet-cache-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             planet-cache-
 

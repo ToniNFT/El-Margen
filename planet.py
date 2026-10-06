@@ -42,11 +42,17 @@ FEED_FILE = OUTPUT_DIR / "feed.xml"
 OEMBED_CACHE_FILE = BASE_DIR / ".oembed_cache.json"
 FEED_CACHE_DIR = BASE_DIR / ".feed_cache"   # último XML válido de cada feed
 
-FEED_TIMEOUT = 2          # segundos por descarga de feed
-FEED_RETRIES = 1           # intentos antes de recurrir a la caché
+FEED_TIMEOUT = 20          # segundos por descarga de feed
+FEED_RETRIES = 2           # intentos antes de recurrir a la caché
+# Se alternan por intento: primero uno honesto de lector de feeds (el que
+# aceptan WordPress.com y la mayoría), luego uno de navegador (el que a veces
+# necesita YouTube).
+FEED_USER_AGENTS = [
+    "PlanetElMargen/1.0 (+https://toninft.github.io/El-Margen/)",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+]
 FEED_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                  "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
     "Accept": "application/atom+xml,application/rss+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "es-ES,es;q=0.9",
 }
@@ -304,7 +310,8 @@ def download_feed(url: str) -> bytes | None:
     """Descarga el feed con reintentos; devuelve el contenido solo si parece XML de feed."""
     for attempt in range(1, FEED_RETRIES + 1):
         try:
-            resp = requests.get(url, headers=FEED_HEADERS, timeout=FEED_TIMEOUT)
+            agent = FEED_USER_AGENTS[(attempt - 1) % len(FEED_USER_AGENTS)]
+            resp = requests.get(url, headers={**FEED_HEADERS, "User-Agent": agent}, timeout=FEED_TIMEOUT)
             if resp.status_code == 200 and _looks_like_feed(resp.content):
                 return resp.content
             log.warning(

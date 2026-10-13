@@ -98,6 +98,15 @@ body {
   text-decoration: underline;
 }
 
+.masthead-photo-extra {
+  margin: 8px 0 0;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+}
+
+.masthead-photo-extra a { color: var(--stamp-red); }
+.masthead-photo-extra a:hover { color: var(--ink); }
+
 /* ---------- Rejilla de tarjetas ---------- */
 
 .grid {

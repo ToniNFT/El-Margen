@@ -1,0 +1,280 @@
+/* Planet El Margen — papel envejecido + tinta de cartel, una tarjeta bajo otra */
+
+:root {
+  --paper: #f2ede1;
+  --paper-edge: #e6dfcd;
+  --ink: #1c1a16;
+  --ink-soft: #4a453b;
+  --meta: #857a63;
+  --rule: #d3c7a8;
+  --stamp-red: #a3392c;
+  --gutter: clamp(12px, 2.5vw, 32px);
+  --sans: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0 0 60px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+}
+
+/* Contenedor común: ocupa todo el ancho, con un tope para pantallas enormes */
+.wrap {
+  width: 100%;
+  max-width: 700px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- Cabecera ---------- */
+
+.masthead {
+  padding-block: 24px;
+  border-bottom: 3px double var(--rule);
+}
+
+.masthead h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.masthead h1 a { color: var(--ink); text-decoration: none; }
+.masthead h1 a:hover { text-decoration: underline; }
+
+.tagline {
+  margin: 6px 0 0;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  white-space: pre-line;
+}
+
+.subscribe { margin: 10px 0 0; line-height: 0; }
+
+.subscribe a {
+  display: inline-block;
+  color: var(--stamp-red);
+}
+
+.subscribe a:hover,
+.subscribe a:focus-visible { color: var(--ink); }
+
+.masthead-photo { margin-top: 20px; }
+
+.masthead-photo a {
+  display: block;
+  width: min(100%, 435px);
+  text-decoration: none;
+  color: inherit;
+}
+
+.masthead-photo img {
+  display: block;
+  width: 100%;
+  max-height: 256px;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+
+.masthead-photo-caption {
+  margin: 6px 0 0;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.masthead-photo a:hover .masthead-photo-caption {
+  color: var(--stamp-red);
+  text-decoration: underline;
+}
+
+/* ---------- Rejilla de tarjetas ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin-top: 24px;
+  align-items: start;
+}
+
+.card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.card > * { max-width: 100%; }
+img, iframe, audio { max-width: 100%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: background-color 0.15s ease; }
+}
+
+/* ---------- Medios ---------- */
+
+.media { display: block; width: 100%; }
+
+.media-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #0c0b09;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.media-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.media-audio iframe {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.media-audio-direct {
+  padding: 14px 10px;
+  background: var(--paper-edge);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+
+.media-audio-direct audio {
+  display: block;
+  width: 100%;
+  accent-color: var(--stamp-red);
+}
+
+.media-thumb {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper-edge);
+}
+
+.media-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;   /* no recorta; si es muy alta, se ve entera con bandas */
+}
+
+/* Portada de kiosko.net: miniatura de 200 px, se muestra a su tamaño
+   natural y centrada para que no se vea pixelada al ampliarla */
+.card-kiosko .media-thumb img {
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+/* ---------- Información de la tarjeta ---------- */
+
+.card-info {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 12px;
+  align-items: start;
+  padding: 0 2px 10px;
+}
+
+.favicon {
+  margin-top: 2px;
+  border-radius: 50%;
+}
+
+.card-text { min-width: 0; }
+
+.title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.title:hover {
+  color: var(--stamp-red);
+  text-decoration: underline;
+}
+
+.source {
+  margin: 4px 0 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--stamp-red);
+  overflow-wrap: anywhere;
+}
+
+.source a { color: inherit; text-decoration: none; }
+.source a:hover { text-decoration: underline; }
+
+.stamp {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--meta);
+}
+
+.summary {
+  margin: 10px 2px 0;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 40px 8px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.colophon {
+  margin-top: 40px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--meta);
+}
+
+.colophon p { margin: 2px 0; }
+
+/* ---------- Móvil: una columna que nunca excede la pantalla ---------- */
+
+@media (max-width: 599px) {
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 8px; }
+  .masthead-photo a { width: 100%; }
+}

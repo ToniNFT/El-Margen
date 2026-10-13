@@ -40,11 +40,29 @@
       <img src="{{ site_photo_url }}" alt="{{ site_photo_alt }}" loading="lazy">
       {% if site_photo_caption %}<p class="masthead-photo-caption">{{ site_photo_caption }}</p>{% endif %}
     {% if site_photo_link %}</a>{% endif %}
-    <p class="masthead-photo-extra"><a href="https://kiosko.net" target="_blank" rel="noopener">kiosko.net</a></p>
   </div>
   {% endif %}
 
   <main class="grid wrap">
+    {% if kiosko %}
+    <article class="card card-kiosko">
+      <div class="card-info">
+        <img class="favicon" src="{{ kiosko.favicon }}" alt="" width="24" height="24" loading="lazy">
+        <div class="card-text">
+          <a class="title" href="{{ kiosko.link }}" target="_blank" rel="noopener">{{ kiosko.title }}</a>
+          <p class="source"><a href="{{ kiosko.site_url }}" target="_blank" rel="noopener">{{ kiosko.feed_title }}</a></p>
+          <time class="stamp">{{ kiosko.stamp }}</time>
+        </div>
+      </div>
+
+      <a class="media media-thumb" href="{{ kiosko.link }}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <img src="{{ kiosko.image }}" alt="" loading="lazy">
+      </a>
+
+      <p class="summary">{{ kiosko.summary }}</p>
+    </article>
+    {% endif %}
+
     {% for entry in entries %}
     <article class="card">
       <div class="card-info">
